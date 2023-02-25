@@ -26,6 +26,9 @@ def evaluate(model, tx, ty, id2tag, name='', base_path=None, is_test=False, type
             sentence = sentence.unsqueeze(0)
             mask = torch.ones((1, sentence.size(1))).byte().cuda()
             feats = model(sentence, mask)
+            #put om device
+            feats=feats.to(device)
+            mask=mask.to(device)
             if isinstance(model, torch.nn.parallel.DataParallel):
                 ret = model.module.crf.forward(feats, mask)
             else:
@@ -47,7 +50,8 @@ def evaluate(model, tx, ty, id2tag, name='', base_path=None, is_test=False, type
                 idx = pi[j]
                 if idx not in id2tag:
                     idx = 0
-                fout.write(id2tag[idx] + ' ' + id2tag[ti[j]] + '\n')
+                #fout.write(id2tag[idx] + ' ' + id2tag[ti[j]] + '\n')# fout.write(id2tag[idx] + ' ' + id2tag[ti[j]] + '\n')KeyError: 11
+                fout.write( id2tag.get(idx,"UNK") + ' ' + id2tag.get(ti [ j ],"UNK")+ '\n' )
             fout.write('\n')
 
         fout.close()
@@ -64,9 +68,9 @@ if __name__ == "__main__":
     parser.add_argument('--model_name', type=str, default='weibo_model', help='give the model a name.')
     parser.add_argument('--data_name', type=str, default='weibo', choices=['weibo', 'MSRA', 'onto4'], help='name for dataset.')
 
-    parser.add_argument('--train_data_path', type=str, default='../data/weiboNER_2nd_conll.train', help='file path for train set.')
-    parser.add_argument('--test_data_path', type=str, default='../data/weiboNER_2nd_conll.test', help='file path for test set.')
-    parser.add_argument('--dev_data_path', type=str, default='../data/weiboNER_2nd_conll.dev', help='file path for dev set.')
+    parser.add_argument('--train_data_path', type=str, default='../data/weiboNER_2nd_conll_short.train', help='file path for train set.')
+    parser.add_argument('--test_data_path', type=str, default='../data/weiboNER_2nd_conll_short.test', help='file path for test set.')
+    parser.add_argument('--dev_data_path', type=str, default='../data/weiboNER_2nd_conll_short.dev', help='file path for dev set.')
     parser.add_argument('--pretrained_embed_path', type=str, default='../data/embeds', help='path for embedding.')
     parser.add_argument('--result_folder', type=str, default='output', help='folder path for save models and results.')
 
@@ -157,8 +161,8 @@ if __name__ == "__main__":
                 loss = model.crf.batch_loss(bfeats, mask, batch_y)
             epoch_loss += loss.item()
             n2 = time.time()
-            print(epoch + 1, idx, n, loss.item(), n2 - n1)
-            print(epoch + 1, idx, n, loss.item(), n2 - n1, file=batch_log)
+            print( "epoch:", epoch + 1, " idx:", idx, " len:", n, " loss.item():", loss.item() , " time:", n2 - n1 )
+            print("epoch:",epoch + 1," idx:", idx," len:", n," loss.item():", loss.item()," time:",n2 - n1, file=batch_log)
 
             loss.backward()
             optimizer.step()
@@ -168,8 +172,8 @@ if __name__ == "__main__":
             del loss
 
         epoch_loss = epoch_loss / batch_cnt
-        print(epoch + 1, epoch_loss, file=epoch_log)
-        print(epoch + 1, epoch_loss)
+        print("epoch:",epoch + 1," epoch_loss:", epoch_loss, file=epoch_log)
+        print("epoch:",epoch + 1," epoch_loss:", epoch_loss)
 
         if args.dev_data_path is not None:
             if "weibo" in data_name:

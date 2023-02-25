@@ -197,6 +197,7 @@ class CRF(nn.Module):
             ## cur_bp: (batch_size, tag_size) max source score position in current tag
             ## set padded label as 0, which will be filtered in post processing
             cur_bp.masked_fill_(mask[idx].view(batch_size, 1).expand(batch_size, tag_size), 0)
+            cur_bp.to(device)#put on device
             back_points.append(cur_bp)
         ### add score to final STOP_TAG
 
@@ -212,9 +213,8 @@ class CRF(nn.Module):
             batch_size, tag_size, tag_size)
         _, last_bp = torch.max(last_values, 1)
         pad_zero = torch.zeros(batch_size, tag_size).long()
-        pad_zero.to(device)
+        pad_zero=pad_zero.to(device)
         back_points.append(pad_zero)
-        back_points.to(device)
         back_points = torch.cat(back_points).view(seq_len, batch_size, tag_size)
 
         ## select end ids in STOP_TAG
@@ -240,6 +240,9 @@ class CRF(nn.Module):
         return path_score, decode_idx
 
     def forward(self, feats, mask):
+        #put on device
+        feats = feats.to( device )
+        mask = mask.to( device )
         path_score, best_path = self._viterbi_decode(feats, mask)
         return path_score, best_path
 
