@@ -273,6 +273,7 @@ class CRF(nn.Module):
         ## length for batch,  last word position = length - 1
         length_mask = torch.sum(mask.long(), dim=1).view(batch_size, 1).long()
         ## index the label id of last word
+        tags=tags.to(device)
         end_ids = torch.gather(tags, 1, length_mask - 1)
 
         ## index the transition score for end_id to STOP_TAG

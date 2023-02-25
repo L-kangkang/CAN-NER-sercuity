@@ -61,7 +61,7 @@ class ACNN(nn.Module):
 
     def forward(self, embeds_output):
         batch_n, seq_len, feature_dim = embeds_output.size()
-
+        embeds_output=embeds_output.to(device)#put on device
         conv_embeds = self.getConvEmbeds(embeds_output[:]).transpose(3, 2)
 
         # batch, seq_len, features, windows
@@ -100,6 +100,9 @@ class ACNN(nn.Module):
             pad = self.padding_vector(self.feature_dim)
             pad = pad.view(1, 1, -1)
             pad = pad.expand(batch_n, 1, self.feature_dim)
+            #put on device
+            embeds_output=embeds_output.to(device)
+            pad=pad.to(device)
             embeds_output = torch.cat([pad, embeds_output, pad], 1)
 
         conv_out = []

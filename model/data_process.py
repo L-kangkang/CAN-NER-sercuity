@@ -67,12 +67,12 @@ def load_embed(filename):
 
     embs = []
     file_names = [
-                  "./data/embeds",
-                  "./data/embedding/embeds",
-                  "./data/embedding/word2vec.sgns.weibo.onlychar",
-                  "./data/embedding/fasttext.cc.zh.300.vec.onlychar",
-                  "./data/embedding/glove.6B.100d.english.txt",
-                  "./data/embedding/glove.6B.300d.english.txt"]
+                  "../data/embeds",
+                  "../data/embedding/embeds",
+                  "../data/embedding/word2vec.sgns.weibo.onlychar",
+                  "../data/embedding/fasttext.cc.zh.300.vec.onlychar",
+                  "../data/embedding/glove.6B.100d.english.txt",
+                  "../data/embedding/glove.6B.300d.english.txt"]
 
     if filename in file_names:
         print("ADD UNK and PAD.....")

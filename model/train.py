@@ -130,7 +130,7 @@ if __name__ == "__main__":
         model = nn.DataParallel(model, [0, 1])
 
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr)
-
+    model=model.to(device)
     n = len(trainX)
     best_dev = -1
     best_test = -1
@@ -147,6 +147,9 @@ if __name__ == "__main__":
             optimizer.zero_grad()
 
             n1 = time.time()
+            #put on device
+            batch_x=batch_x.to(device)
+            mask=mask.to(device)
             bfeats = model(batch_x, mask)
             if isinstance(model, torch.nn.parallel.DataParallel):
                 loss = model.module.crf.batch_loss(bfeats, mask, batch_y)
