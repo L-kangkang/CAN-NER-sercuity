@@ -214,6 +214,7 @@ class CRF(nn.Module):
         pad_zero = torch.zeros(batch_size, tag_size).long()
         pad_zero.to(device)
         back_points.append(pad_zero)
+        back_points.to(device)
         back_points = torch.cat(back_points).view(seq_len, batch_size, tag_size)
 
         ## select end ids in STOP_TAG

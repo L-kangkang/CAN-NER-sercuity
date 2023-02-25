@@ -190,6 +190,6 @@ if __name__ == "__main__":
                 epoch + 1, dev_F, test_F, best_epoch, best_dev, best_test), file=open(base_path + "/F1.log", 'a'))
         else:
             evaluate(model, testX, testY, id2tag, model_name, base_path, is_test=True, type="test")
-
+        break
 
     torch.save(model.state_dict(), base_path + "/" + model_name)
