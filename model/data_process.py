@@ -268,7 +268,14 @@ def getTagIx(name, ):
             "B-LOC", "M-LOC", "S-LOC", "E-LOC",
         ]
         tag_to_ix = getTagDict(tags)
-
+    elif name =='security':
+        tags=['O','B-Identity', 'I-Identity', 'B-Malware', 'I-Malware',
+              'B-Threat_Actor', 'I-Threat_Actor', 'B-Attack_Pattern', 'I-Attack_Pattern',
+              'B-Location', 'I-Location', 'B-Software', 'I-Software', 'B-ip', 'I-ip',
+              'B-Hardware', 'I-Hardware', 'B-Course_of_Action', 'I-Course_of_Action', 'B-url',
+              'I-url', 'B-Vulnerability', 'I-Vulnerability', 'B-OS', 'I-OS', 'B-path', 'I-path',
+              'B-hash', 'I-hash']
+        tag_to_ix = getTagDict( tags )
     ix_to_tag = {val: key for (key, val) in tag_to_ix.items()}
     return tag_to_ix, ix_to_tag
 
